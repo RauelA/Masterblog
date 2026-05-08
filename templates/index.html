@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-        <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <head>
         <title>Blog</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body>
     <h1>My Blog</h1>
+    <a href="{{ url_for('add') }}">➕ New Post</a>
 
     {% for post in posts %}
         <div class="post">
             <h2>{{ post.title }}</h2>
             <p><strong>Author:</strong> {{ post.author }}</p>
             <p>{{ post.content }}</p>
-
-            <a href="{{ url_for('add') }}">Add New Post</a>
-            <a href="{{ url_for('delete', post_id=post.id) }}" onclick="return confirm('Are you sure?')"> Delete </a>
+            <div class="actions">
+                <a href="{{ url_for('update', post_id=post.id) }}">📝</a>
+                <a href="{{ url_for('delete', post_id=post.id) }}" onclick="return confirm('Are you sure?')">🗑</a>
+            </div>
         </div>
     {% endfor %}
 

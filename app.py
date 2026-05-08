@@ -14,6 +14,13 @@ def save_posts(posts):
         json.dump(posts, file, indent=4)
 
 
+def fetch_post_by_id(post_id):
+    posts = load_posts()
+    for post in posts:
+        if post["id"] == post_id:
+            return post
+    return None
+
 @app.route('/')
 def index():
     blog_posts = load_posts()
@@ -51,6 +58,35 @@ def delete(post_id):
     save_posts(posts)
 
     return redirect(url_for('index'))
+
+
+@app.route('/update/<int:post_id>', methods=['GET', 'POST'])
+def update(post_id):
+    posts = load_posts()
+
+    post_to_update = None
+
+    for post in posts:
+        if post["id"] == post_id:
+            post_to_update = post
+            break
+
+    if post_to_update is None:
+        return "Post not found", 404
+
+    if request.method == 'POST':
+        for post in posts:
+            if post["id"] == post_id:
+                post["author"] = request.form.get("author")
+                post["title"] = request.form.get("title")
+                post["content"] = request.form.get("content")
+                break
+
+        save_posts(posts)
+        return redirect(url_for('index'))
+
+    return render_template('update.html', post=post_to_update)
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
